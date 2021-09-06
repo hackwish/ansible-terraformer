@@ -5,11 +5,13 @@
     path: /opt/terraformer
     state: directory
     mode: '0755'
+  tags: terraformer
 
 - name: Get latest Release from terraformer
   shell: curl -Lo /opt/terraformer/terraformer https://github.com/GoogleCloudPlatform/terraformer/releases/download/$(curl -s https://api.github.com/repos/GoogleCloudPlatform/terraformer/releases/latest | grep tag_name | cut -d '"' -f 4)/terraformer-all-linux-amd64
   args:
     warn: no
+  tags: terraformer
 
 - name: Change file ownership, group and permissions
   ansible.builtin.file:
@@ -17,10 +19,12 @@
     owner: root
     group: root
     mode: '0755'
+  tags: terraformer
 
 - name: Verify terraformer exists
   stat: path=/opt/terraformer/terraformer
   register: terraformer_stat
+  tags: terraformer
 
 - name: Configure terraformer on system bin.
   file:
@@ -28,6 +32,7 @@
     dest: "/usr/bin/terraformer"
     state: link
   when: terraformer_stat.stat.exists
+  tags: terraformer
 
 - name: Configure terraformer on system sbin.
   file:
@@ -35,11 +40,14 @@
     dest: "/usr/sbin/terraformer"
     state: link
   when: terraformer_stat.stat.exists
+  tags: terraformer
 
 - command: terraformer version
   register: result_terraformer
   failed_when: false
   changed_when: false
+  tags: terraformer
 
 - debug:
     var: result_terraformer.stdout
+  tags: terraformer
