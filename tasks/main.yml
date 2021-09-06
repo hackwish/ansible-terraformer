@@ -1,0 +1,45 @@
+---
+# tasks file for ansible-terraformer
+- name: Create terraformer directory
+  ansible.builtin.file:
+    path: /opt/terraformer
+    state: directory
+    mode: '0755'
+
+- name: Get latest Release from terraformer
+  shell: curl -Lo /opt/terraformer/terraformer https://github.com/GoogleCloudPlatform/terraformer/releases/download/$(curl -s https://api.github.com/repos/GoogleCloudPlatform/terraformer/releases/latest | grep tag_name | cut -d '"' -f 4)/terraformer-all-linux-amd64
+  args:
+    warn: no
+
+- name: Change file ownership, group and permissions
+  ansible.builtin.file:
+    path: /opt/terraformer/terraformer
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Verify terraformer exists
+  stat: path=/opt/terraformer/terraformer
+  register: terraformer_stat
+
+- name: Configure terraformer on system bin.
+  file:
+    src: "/opt/terraformer/terraformer"
+    dest: "/usr/bin/terraformer"
+    state: link
+  when: terraformer_stat.stat.exists
+
+- name: Configure terraformer on system sbin.
+  file:
+    src: "/opt/terraformer/terraformer" 
+    dest: "/usr/sbin/terraformer"
+    state: link
+  when: terraformer_stat.stat.exists
+
+- command: terraformer version
+  register: result_terraformer
+  failed_when: false
+  changed_when: false
+
+- debug:
+    var: result_terraformer.stdout
