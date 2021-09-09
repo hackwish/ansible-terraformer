@@ -88,6 +88,7 @@
     line: 'export PATH="/opt/terraformer/:$PATH"'
   with_items: "{{ users.stdout_lines }}"
   tags: terraformer
+  ignore_errors: true
 
 - name: update terraformer on skel bashrc
   lineinfile:
