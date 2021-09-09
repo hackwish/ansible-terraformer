@@ -98,7 +98,7 @@
   tags: terraformer
 
 # Check status
-- shell: bash -ilc 'which terraformer'
+- command: bash -ilc 'which terraformer'
   register: which_terraformer
   failed_when: false
   changed_when: false
