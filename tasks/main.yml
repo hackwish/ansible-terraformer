@@ -16,8 +16,8 @@
 
 - name: Get latest Release from terraformer
   shell: curl -Lo /opt/terraformer/terraformer https://github.com/GoogleCloudPlatform/terraformer/releases/download/$(curl -s https://api.github.com/repos/GoogleCloudPlatform/terraformer/releases/latest | grep tag_name | cut -d '"' -f 4)/terraformer-all-linux-amd64
-  args:
-    warn: no
+  # args:
+  #   warn: no
   tags: terraformer
 
 - name: Change file ownership, group and permissions
